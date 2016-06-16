@@ -18,7 +18,11 @@ class CreaturesController < ApplicationController
   def create
     @creature = Creature.new(request_params)
     if @creature.save
+      flash[:notice] = "Creature created!"
       redirect_to creature_path(@creature)
+    else
+      flash[:errors] = @creature.errors.full_messages.join(', ')
+      render :new
     end
   end
 
@@ -29,8 +33,13 @@ class CreaturesController < ApplicationController
 
   def update
     @creature = Creature.find(params[:id])
-    @creature.update_attributes(request_params)
-    redirect_to creature_path(@creature)
+    if @creature.update_attributes(request_params)
+      flash[:notice] = "Creature updated!"
+      redirect_to creature_path(@creature)
+    else
+      flash[:errors] = @creature.errors.full_messages.join(', ')
+      render :edit
+    end
   end
 
   def destroy
